@@ -1,0 +1,57 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>효도발견 콘텐츠 제작기</title><style>
+:root{font-family:system-ui,-apple-system,sans-serif;color:#242924;background:#f6f5f0}*{box-sizing:border-box}body{margin:0}header{background:#fff;padding:22px max(18px,calc((100vw - 920px)/2));border-bottom:1px solid #ddd}h1{font-size:25px;margin:0 0 7px}main{max-width:920px;margin:24px auto;padding:0 18px}a{color:#355b4b}.panel{background:#fff;border:1px solid #e2e4db;border-radius:16px;padding:20px;margin:15px 0}h2{font-size:20px;margin:0 0 15px}label{display:block;font-size:14px;color:#556057;margin:8px 0}input,textarea,select{width:100%;padding:12px;border:1px solid #ccd1c8;border-radius:10px;margin-top:6px;font:inherit}textarea{min-height:88px}button{font:inherit;padding:11px 16px;border:1px solid #cfd3ca;background:#fff;border-radius:10px;cursor:pointer}.primary{background:#2f3c31;color:white}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.wide{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.card{background:#f7f7f2;border-radius:12px;padding:15px;margin:10px 0;white-space:pre-wrap;line-height:1.7}.hint{color:#747970;font-size:13px}.status{color:#375d46;font-size:14px;min-height:22px}.mini{font-size:12px;color:#667069}@media(max-width:670px){.grid{grid-template-columns:1fr}} 
+</style></head><body><header><h1>효도발견 · 콘텐츠 바로 만들기</h1><div class="hint">아이디어만 입력하면 카드뉴스·스레드·릴스 초안을 만들고 복사하거나 스튜디오에 저장합니다.</div><p><a href="./index.html">대시보드</a> · <a href="./studio.html">스튜디오</a> · <a href="./calendar.html">캘린더</a></p></header><main>
+<div class="panel"><h2>① 무엇을 이야기할까요?</h2><div class="grid">
+<label>주제<input id="topic" placeholder="예: 부모님 집 침실 센서등" value="부모님 집 침실 센서등"></label>
+<label>콘텐츠 유형<select id="type"><option value="care">부모님 공감 이야기</option><option value="tip">생활 불편 해결</option><option value="product">제품 추천·검토</option></select></label>
+<label>타깃<select id="audience"><option>부모님을 생각하는 자녀</option><option>50~70대 시니어</option><option>가족 전체</option></select></label>
+<label>채널<select id="channel"><option value="carousel">인스타 카드뉴스 (5장)</option><option value="threads">스레드 글</option><option value="reel">인스타 릴스 (20초)</option></select></label>
+<label class="wide">실제 경험이나 관찰 (선택)<textarea id="detail" placeholder="예: 밤에 화장실 갈 때 스위치가 멀어 불편해하셨다"></textarea></label>
+<label class="wide">제품명·검증할 점 (선택)<input id="product" placeholder="예: 모션 센서등, 설치 위치 / 밝기 / 충전 방식"></label>
+</div><div class="actions"><button class="primary" id="make">초안 만들기</button><button id="sample">예시 불러오기</button></div><p class="hint">이 기능은 API 요금 없는 규칙 기반 초안 작성입니다. 사실·후기·효능을 임의 생성하지 않으며, 최종 문구는 직접 검수해야 합니다.</p></div>
+<div class="panel" id="output" hidden><h2>② 초안 확인·수정</h2><label>추천 훅 3개<textarea id="hooks" rows="3"></textarea></label><label>최종 콘텐츠 문구<textarea id="text" rows="10" style="min-height:240px"></textarea></label><label>게시용 캡션<textarea id="caption" rows="4"></textarea></label><div class="actions"><button id="copy" class="primary">전체 내용 복사</button><button id="save">스튜디오에 초안 저장</button><button id="prompt">AI 고급화용 지시문 복사</button></div><p id="message" class="status" role="status"></p><p class="hint">스튜디오 저장 기능은 같은 브라우저에서 사용할 때 연결됩니다. GitHub에 데이터가 업로드되는 기능은 아닙니다.</p></div>
+<div class="panel"><h2>③ 추천 작업 순서</h2><div class="card">1. 위에서 오늘 소재를 입력하고 초안 만들기
+2. 어색한 문장 수정하고 이미지·영상 제작
+3. '스튜디오에 초안 저장' → 검수 대기 → 승인
+4. 발행 캘린더에서 날짜 설정
+5. 실제 게시 후 스튜디오에 조회·저장·공유 기록</div></div>
+</main><script>
+"use strict";
+const $=id=>document.getElementById(id);
+const clean=s=>String(s||"").trim();let latest={};
+function make(){
+const t=clean($("topic").value),detail=clean($("detail").value),p=clean($("product").value),kind=$("type").value,channel=$("channel").value;
+if(!t){alert("주제를 입력해주세요.");$("topic").focus();return}
+const lines={
+care:[`부모님 집에서 발견한 작은 불편: ${t}`,`그동안 몰랐던 부모님 일상의 한 장면`,`익숙한 집인데, 불편한 건 없을까요?`],
+tip:[`${t}, 먼저 이 부분부터 살펴보세요`,`부모님 생활에서 놓치기 쉬운 불편`,`사기 전에 확인할 것부터 정리했어요`],
+product:[`${t}, 부모님께도 잘 맞을까요?`,`부모님 선물, 가격보다 먼저 볼 것`,`${t} 선택 전에 확인할 3가지`]
+}[kind];
+const observation=detail||"부모님 생활에 실제로 어떤 불편이 있는지 먼저 살펴보세요.";
+const check=p||"설치·사용 방식, 가격, 실제 이용 환경을 확인하세요.";
+let body="",caption="";
+if(channel==="carousel"){
+body=[`1장 | ${lines[0]}`,`2장 | ${observation}`,`3장 | 당연하게 여겼던 일상이 누군가에겐 불편할 수 있어요.`,`4장 | ${kind==="care"?"무엇이 필요한지 먼저 물어보는 것부터.":check}`,`5장 | 부모님 집에서는 어떤 순간이 가장 불편했나요?`].join("\n\n");
+caption="부모님 집에 갔을 때 무심코 지나쳤던 것들이 있죠. 여러분은 어떤 불편을 발견하셨나요?";
+}else if(channel==="threads"){
+body=[lines[0],"",observation,"",kind==="product"?check:"꼭 대단한 선물이 아니어도, 먼저 알아차리는 것부터 시작할 수 있겠더라고요.","","부모님 집에서 발견한 작은 불편, 어떤 게 있었나요?"].join("\n");
+caption="댓글에 실제 경험을 나눠주세요.";
+}else{
+body=[`0~3초 | 훅: ${lines[0]}`,`3~8초 | 상황: ${observation}`,`8~14초 | ${kind==="care"?"그 불편을 그냥 지나치지 않고 물어보는 장면":check}`,`14~20초 | 마무리: 부모님 집에서 가장 먼저 살펴보고 싶은 건 무엇인가요?`].join("\n\n");
+caption="실제 촬영 장면과 사용 환경을 확인해 제작하세요. 없는 사용 경험이나 효과를 만들지 마세요.";
+}
+if(kind==="product")caption+="\n\n제휴 링크를 삽입한다면 광고·경제적 이해관계 고지를 반드시 확인하세요.";
+$("hooks").value=lines.map((x,i)=>`${i+1}. ${x}`).join("\n");
+$("text").value=body;$("caption").value=caption;$("output").hidden=false;
+latest={title:t,format:channel==="carousel"?"카드뉴스":channel==="threads"?"스레드 텍스트":"릴스",audience:$("audience").value};
+$("message").textContent="초안을 만들었습니다. 수정한 뒤 복사하거나 스튜디오에 저장하세요.";
+$("output").scrollIntoView({behavior:"smooth",block:"start"});
+}
+$("make").onclick=make;
+$("sample").onclick=()=>{$("topic").value="부모님 집 침실 센서등";$("detail").value="밤에 일어나실 때 침대에서 전등 스위치가 멀다고 하셨다";$("product").value="센서등의 설치 위치, 밝기, 충전 방식을 확인";$("type").value="tip";$("channel").value="carousel";make()};
+function full(){return "훅 후보\n"+$("hooks").value+"\n\n콘텐츠\n"+$("text").value+"\n\n캡션\n"+$("caption").value}
+async function copy(text){try{await navigator.clipboard.writeText(text);$("message").textContent="복사했습니다."}catch{const ta=document.createElement("textarea");ta.value=text;document.body.append(ta);ta.select();const ok=document.execCommand("copy");ta.remove();$("message").textContent=ok?"복사했습니다.":"자동 복사가 제한되었습니다. 텍스트를 길게 눌러 직접 복사하세요."}}
+$("copy").onclick=()=>copy(full());
+$("prompt").onclick=()=>copy("다음은 효도발견의 콘텐츠 초안이야. 29CM처럼 절제된 문장, 부모님께 공감하는 자연스러운 말투로 수정해줘. 사진에 긴 설명문은 넣지 말고, 카드뉴스는 각 장 1~2문장 이내로. 실제로 경험하지 않은 사실이나 효능은 지어내지 마. 광고 연결은 강요하지 말고 필요할 때만 별도 제안해줘.\n\n"+full());
+$("save").onclick=()=>{if(!latest.title){alert("먼저 초안을 만드세요.");return}const key="hyodo-studio-v1";let data;try{data=JSON.parse(localStorage.getItem(key))}catch{}if(!data||!Array.isArray(data.drafts)||!Array.isArray(data.references)||!Array.isArray(data.results))data={references:[],drafts:[],results:[]};const id=typeof crypto!=="undefined"&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random();data.drafts.unshift({id,title:latest.title,format:latest.format,reference:"",status:"초안",hook:$("hooks").value.split("\n")[0]||"",script:$("text").value,caption:$("caption").value});try{localStorage.setItem(key,JSON.stringify(data));$("message").textContent="스튜디오에 저장했습니다. 스튜디오 메뉴에서 확인하세요."}catch{$("message").textContent="저장 실패. 브라우저의 저장 공간과 설정을 확인하세요."}};
+</script></body></html>
